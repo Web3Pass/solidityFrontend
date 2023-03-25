@@ -1,11 +1,14 @@
 import React from 'react'
-import Button from '@mui/material/Button';
+import LoadingButton from '@mui/lab/LoadingButton';
 
-export default function ConnectWallet({ connectWalletHandler }) {
+export default function ConnectWallet({ data: { loading, connectWalletHandler } }) {
     return (
-        <Button onClick={connectWalletHandler} variant="contained" fullWidth sx={{ mt: 5 }}
+        <LoadingButton
+            loading={loading} onClick={connectWalletHandler} fullWidth
+            variant="contained"
+            sx={{ mt: 3, mb: 2 }}
         >
             Conectar Billetera
-        </Button>
+        </LoadingButton>
     )
 }

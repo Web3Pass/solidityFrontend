@@ -1,48 +1,48 @@
 import React from 'react'
 import FormToGetCredentials from "@components/FormToGetCredentials";
 import FormToSaveCredentials from "@components/FormToSaveCredentials";
-import Accordion from "@mui/material/Accordion";
-import AccordionSummary from "@mui/material/AccordionSummary";
-import AccordionDetails from "@mui/material/AccordionDetails";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import Typography from "@mui/material/Typography";
+
 import HashComponent from "@components/HashComponent";
 
-export default function Accordions({ data: { credentials, transactionHash, handleSubmit, handleGetCredentials } }) {
+import Box from '@mui/material/Box';
+import Tab from '@mui/material/Tab';
+import TabContext from '@mui/lab/TabContext';
+import TabList from '@mui/lab/TabList';
+import TabPanel from '@mui/lab/TabPanel';
+
+export default function Accordions({ data: { credentials, transactionHash, loading, handleSubmit, handleGetCredentials, handleBack } }) {
+    const [value, setValue] = React.useState('1');
+
+    const handleChange = (event, newValue) => {
+        setValue(newValue);
+    };
+
     return (
         <>
-            <Accordion>
-                <AccordionSummary
-                    expandIcon={<ExpandMoreIcon />}
-                    aria-controls="panel1a-content"
-                    id="panel1a-header"
-                >
-                    <Typography>Guardar contraseña</Typography>
-                </AccordionSummary>
-                <AccordionDetails>
-                    {transactionHash ? (
-                        <HashComponent data={{ transactionHash, handleBack }} />
-                    ) : (
-                        <FormToSaveCredentials
-                            data={{ credentials, handleSubmit }}
+            <Box sx={{ width: 900, typography: 'body1', height: 450 }}>
+                <TabContext value={value}>
+                    <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                        <TabList onChange={handleChange} aria-label="lab API tabs example">
+                            <Tab label="Guardar contraseña" value="1" />
+                            <Tab label="Recuperar Contraseña" value="2" />
+                        </TabList>
+                    </Box>
+                    <TabPanel value="1">
+                        {transactionHash ? (
+                            <HashComponent data={{ transactionHash, handleBack }} />
+                        ) : (
+                            <FormToSaveCredentials
+                                data={{ handleSubmit, loading }}
+                            />
+                        )}
+                    </TabPanel>
+                    <TabPanel value="2">
+                        <FormToGetCredentials
+                            data={{ handleGetCredentials, loading }}
                         />
-                    )}
-                </AccordionDetails>
-            </Accordion>
-            <Accordion>
-                <AccordionSummary
-                    expandIcon={<ExpandMoreIcon />}
-                    aria-controls="panel2a-content"
-                    id="panel2a-header"
-                >
-                    <Typography>Recuperar Contraseña</Typography>
-                </AccordionSummary>
-                <AccordionDetails>
-                    <FormToGetCredentials
-                        handleGetCredentials={handleGetCredentials}
-                    />
-                </AccordionDetails>
-            </Accordion>
+                    </TabPanel>
+                </TabContext>
+            </Box>
         </>
     )
 }

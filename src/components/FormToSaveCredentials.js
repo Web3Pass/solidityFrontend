@@ -1,10 +1,9 @@
 import React from 'react'
-import Button from '@mui/material/Button';
+import LoadingButton from '@mui/lab/LoadingButton';
 import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography'
 
-export default function FormToSaveCredentials({ data: { credentials, handleSubmit } }) {
+export default function FormToSaveCredentials({ data: { handleSubmit, loading } }) {
     return (
         <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
             <TextField
@@ -38,16 +37,16 @@ export default function FormToSaveCredentials({ data: { credentials, handleSubmi
                 autoComplete="url"
             />
 
-            <Button
+            <LoadingButton
+                loading={loading}
                 type="submit"
                 fullWidth
                 variant="contained"
                 sx={{ mt: 3, mb: 2 }}
             >
                 Guardar
-            </Button>
+            </LoadingButton>
 
-            <Typography>{JSON.stringify(credentials)}</Typography>
 
 
         </Box>

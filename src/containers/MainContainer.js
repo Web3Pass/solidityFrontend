@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
-import Snackbar from "@mui/material/Snackbar";;
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import ConnectWallet from "@components/ConnectWallet";
 import TitleWithIcon from "@components/TitleWithIcon";
+import Snack from "@components/Snack";
 import Accordions from "@containers/Accordions";
 import Web3 from "web3";
 import contract from "@contracts/Pass3Messenger.json";
@@ -18,6 +18,14 @@ const MainContainer = () => {
   const [credentials, setCredentials] = useState(false);
   const [snackOpen, setSnackOpen] = useState(false);
   const [snackMessage, setSnackMessage] = useState("");
+  const [severity, setSeverity] = useState("success")
+  const [loading, setLoading] = useState(false)
+
+  const handleSnack = ({ severity, snackOpen, snackMessage }) => {
+    setSeverity(severity);
+    setSnackMessage(snackMessage);
+    setSnackOpen(snackOpen);
+  }
 
   const handleBack = () => {
     setTransactionHash("");
@@ -42,15 +50,18 @@ const MainContainer = () => {
     } else {
       setSnackOpen(true)
       setSnackMessage("No encontré una cuenta autorizada")
+      setSeverity("error")
     }
   };
 
   const connectWalletHandler = async () => {
     const { ethereum } = window;
+    setLoading(true);
 
     if (!ethereum) {
-      setSnackOpen(true)
-      setSnackMessage("Instale Metamask!")
+      handleSnack({ severity: "error", snackOpen: "true", snackMessage: "Debe instalar Metamask!" })
+      setLoading(false);
+      return
     }
 
     try {
@@ -58,7 +69,9 @@ const MainContainer = () => {
         method: "eth_requestAccounts",
       });
       setCurrentAccount(accounts[0]);
-      setwalletConnected(true);
+      setwalletConnected(true)
+      setLoading(false);
+
     } catch (err) {
       console.log(err);
     }
@@ -139,19 +152,14 @@ const MainContainer = () => {
         >
           <TitleWithIcon />
           {walletConnected ? (
-            <Accordions data={{ credentials, transactionHash, handleSubmit, handleGetCredentials }} />
+            <Accordions data={{ credentials, transactionHash, loading, handleSubmit, handleGetCredentials, handleBack }} />
           ) : (
-            <ConnectWallet connectWalletHandler={connectWalletHandler} />
+            <ConnectWallet data={{ loading, connectWalletHandler }} />
           )}
         </Box>
       </Grid>
 
-      < Snackbar
-        anchorOrigin={{ vertical: 'top', horizontal: 'right' }
-        }
-        open={snackOpen}
-        message={snackMessage}
-      />
+      <Snack data={{ snackMessage, severity, snackOpen, setSnackOpen }} />
     </Container>
   );
 };
